@@ -5,14 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>학점 계산기</title>
   <style>
-    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 2rem; }
-    label, select, input, button { display: block; margin-top: 1rem; }
-    input, select { padding: 0.5rem; width: 100%; }
-    button { padding: 0.5rem 1rem; }
-    .result { margin-top: 2rem; font-weight: bold; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+    }
+    img {
+      display: block;
+      margin: 0 auto 1rem auto;
+      max-width: 120px;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    select, input {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 100%;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+    button {
+      padding: 0.7rem 1.2rem;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 2rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+  <img src="./logo.png" alt="학교 로고" />
+
   <h1>학점 계산기 (A를 위한 최소 시험 점수)</h1>
 
   <label for="subject">과목 선택:</label>
@@ -59,9 +103,6 @@
 
       const normalizedPerformance = (performanceScore / performanceMax) * 100;
 
-      // 전체 점수 = 수행점수 * 수행비율 + 시험점수 * 시험비율
-      // A 기준: 총합 80 이상이면 A
-      // 시험 점수 x에 대해: 수행 * 비율 + x * (1 - 비율) >= 80
       const requiredTestScore = (80 - normalizedPerformance * performanceRatio) / testRatio;
 
       if (requiredTestScore > 100) {
