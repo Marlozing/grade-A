@@ -47,8 +47,8 @@
     }
     .result {
       margin-top: 2rem;
-      font-size: 1.3rem;
-      font-weight: 700;
+      font-size: 1.5rem;
+      font-weight: 800;
       color: #333;
       text-align: center;
     }
@@ -57,7 +57,14 @@
 <body>
   <img src="./logo.png" alt="학교 로고" />
 
-  <h1>학점 계산기 (A를 위한 최소 시험 점수)</h1>
+  <h1>학점 계산기</h1>
+
+  <label for="grade">학년 선택:</label>
+  <select id="grade">
+    <option value="1">1학년</option>
+    <option value="2">2학년</option>
+    <option value="3">3학년</option>
+  </select>
 
   <label for="subject">과목 선택:</label>
   <select id="subject"></select>
@@ -70,26 +77,82 @@
   <div class="result" id="result"></div>
 
   <script>
-    // 과목별 수행평가 반영 비율 (0~100%)
-    const subjects = {
-      "수학": 30,
-      "과학": 40,
-      "국어": 20,
-      "영어": 25,
-      "사회": 35
+    const gradeSubjectMap = {
+      1: {
+        "공통국어1": 40,
+        "공통수학1": 40,
+        "공통영어1": 40,
+        "통합과학1": 40,
+        "통합사회1": 40,
+        "한국사1": 50,
+        "정보": 70,
+        "한문": 60
+      },
+      2: {
+        "문학": 40,
+        "수학Ⅰ": 40,
+        "영어Ⅰ": 40,
+        "물리학Ⅰ": 20,
+        "화학Ⅰ": 40,
+        "생명과학Ⅰ": 40,
+        "지구과학Ⅰ": 30,
+        "세계지리": 40,
+        "세계사": 40,
+        "경제": 30,
+        "정치와 법": 40,
+        "생활과 윤리": 40,
+        "기술가정": 50,
+        "중국어Ⅰ": 50,
+        "일본어Ⅰ": 50,
+        "한문Ⅱ": 60
+      },
+      3: {
+        "화법과 작문": 40,
+        "언어와 매체": 40,
+        "확률과 통계": 40,
+        "미적분": 40,
+        "영어 독해와 작문": 30,
+        "심화 영어Ⅰ": 50,
+        "물리학Ⅱ": 70,
+        "화학Ⅱ": 70,
+        "생명과학Ⅱ": 70,
+        "지구과학Ⅱ": 70,
+        "생활과 과학": 70,
+        "한국지리": 40,
+        "동아시아사": 40,
+        "사회문화": 40,
+        "윤리와 사상": 40,
+        "여행지리": 60,
+        "고전과 윤리": 60,
+        "국제경제": 60
+      }
     };
 
+    const gradeSelect = document.getElementById('grade');
     const subjectSelect = document.getElementById('subject');
-    for (const [name, ratio] of Object.entries(subjects)) {
-      const option = document.createElement('option');
-      option.value = name;
-      option.textContent = `${name} (수행 ${ratio}점)`;
-      subjectSelect.appendChild(option);
+
+    gradeSelect.addEventListener('change', () => {
+      updateSubjectOptions();
+    });
+
+    function updateSubjectOptions() {
+      const grade = gradeSelect.value;
+      const subjects = gradeSubjectMap[grade];
+      subjectSelect.innerHTML = '';
+      for (const [name, ratio] of Object.entries(subjects)) {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = `${name} (수행 ${ratio}점)`;
+        subjectSelect.appendChild(option);
+      }
     }
 
+    updateSubjectOptions();
+
     function calculateRequiredScore() {
+      const grade = gradeSelect.value;
       const subject = subjectSelect.value;
-      const performanceMax = subjects[subject];
+      const performanceMax = gradeSubjectMap[grade][subject];
       const performanceRatio = performanceMax / 100;
       const testRatio = 1 - performanceRatio;
 
@@ -101,9 +164,7 @@
         return;
       }
 
-      const normalizedPerformance = (performanceScore / performanceMax) * 100;
-
-      const requiredTestScore = (80 - normalizedPerformance * performanceRatio) / testRatio;
+      const requiredTestScore = (80 - performanceScore) / testRatio;
 
       if (requiredTestScore > 100) {
         resultDiv.textContent = `A를 받는 것은 불가능합니다. 시험에서 만점을 받아도 부족합니다.`;
